@@ -29,8 +29,27 @@ Live demo (GitHub Pages): https://123jjck.github.io/mihomo-configurator/
    - Download
 3. Copy generated YAML or download `config.yaml`.
 
+## Testing
+
+```bash
+npm install
+npm run test:unit
+npm run test:e2e
+npm run build
+```
+
+- Unit tests cover proxy link parsers, WireGuard / AmneziaWG config parsing, YAML generation, import regeneration, and UI state helpers.
+- Browser smoke tests run the static app with Playwright and verify the main config-building flow.
+- The GitHub Actions workflow runs tests, builds `dist`, and deploys it to GitHub Pages from `main`.
+
 ## Project Structure
 
 - `index.html` - UI markup
-- `style.css` - styles
-- `app.js` - app logic, parsers, config generation, and localization
+- `app/style.css` - styles
+- `app/state.js` - state, localization, presets, and shared helpers
+- `app/parsers.js` - proxy/subscription/WireGuard parsers
+- `app/ui.js` - UI rendering and state transitions
+- `app/generate.js` - mihomo YAML generation and import handling
+- `tests/unit` - parser, generator, and UI-state unit tests
+- `tests/e2e` - Playwright browser smoke tests
+- `.github/workflows/test-and-deploy.yml` - CI and GitHub Pages deploy

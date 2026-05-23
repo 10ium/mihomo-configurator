@@ -29,8 +29,27 @@
    - Скачивание
 3. Скопируйте YAML из предпросмотра или скачайте `config.yaml`.
 
+## Тестирование
+
+```bash
+npm install
+npm run test:unit
+npm run test:e2e
+npm run build
+```
+
+- Unit-тесты покрывают парсеры ссылок прокси, WireGuard / AmneziaWG конфиги, генерацию YAML, повторную генерацию импортированного конфига и UI-состояния.
+- Browser smoke-тесты запускают статическое приложение через Playwright и проверяют основной сценарий сборки конфига.
+- GitHub Actions workflow прогоняет тесты, собирает `dist` и деплоит его на GitHub Pages из `main`.
+
 ## Структура проекта
 
 - `index.html` - разметка интерфейса
-- `style.css` - стили
-- `app.js` - логика приложения, парсеры, генерация конфига и локализация
+- `app/style.css` - стили
+- `app/state.js` - состояние, локализация, пресеты и общие helpers
+- `app/parsers.js` - парсеры прокси, подписок и WireGuard
+- `app/ui.js` - рендеринг UI и переходы состояния
+- `app/generate.js` - генерация YAML для mihomo и импорт конфигов
+- `tests/unit` - unit-тесты парсеров, генератора и UI-состояний
+- `tests/e2e` - браузерные smoke-тесты Playwright
+- `.github/workflows/test-and-deploy.yml` - CI и деплой GitHub Pages
