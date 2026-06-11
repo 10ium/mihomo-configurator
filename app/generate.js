@@ -412,13 +412,17 @@ function generateFresh() {
   y += `  enable: true\n`;
   y += `  force-dns-mapping: true\n`;
   y += `  parse-pure-ip: true\n`;
+  y += `  override-destination: false\n`;
   y += `  sniff:\n`;
   y += `    HTTP:\n`;
   y += `      ports: [80, 8080-8880]\n`;
+  y += `      override-destination: false\n`;
   y += `    TLS:\n`;
   y += `      ports: [443, 8443]\n`;
+  y += `      override-destination: false\n`;
   y += `    QUIC:\n`;
   y += `      ports: [443, 8443]\n`;
+  y += `      override-destination: false\n`;
   y += `  skip-domain:\n`;
   y += `    - "Mijia Cloud"\n`;
   y += `    - '+.lan'\n`;
