@@ -78,11 +78,35 @@ describe('UI state helpers', () => {
     expect(ctx.document.getElementById('rule-target').value).toBe('Proxy');
   });
 
+
+
+  it('renders DNS and routing options derived from the provided Persian config', () => {
+    app.renderDnsPresets('default');
+    app.renderDnsPresets('ns');
+    app.renderAllPresets();
+
+    expect(ctx.document.getElementById('dns-default-presets').textContent).toContain('AdGuard');
+    expect(ctx.document.getElementById('dns-default-presets').textContent).toContain('Google + Cloudflare + Quad9');
+    expect(ctx.document.getElementById('dns-ns-presets').textContent).toContain('RethinkDNS');
+    expect(ctx.document.getElementById('presets-services').textContent).toContain('Steam');
+    expect(ctx.document.getElementById('presets-other').textContent).toContain('Iranian ads');
+  });
+
   it('switches localization and updates static labels', () => {
     app.setLanguage('en', false);
 
     expect(app.state.lang).toBe('en');
     expect(ctx.document.getElementById('servers-title').textContent).toBe('Add Servers');
     expect(ctx.document.getElementById('btn-next').textContent).toContain('Next');
+  });
+
+  it('supports Persian localization and RTL document direction', () => {
+    app.setLanguage('fa', false);
+
+    expect(app.state.lang).toBe('fa');
+    expect(ctx.document.documentElement.lang).toBe('fa');
+    expect(ctx.document.documentElement.dir).toBe('rtl');
+    expect(ctx.document.getElementById('servers-title').textContent).toBe('افزودن سرورها');
+    expect(ctx.document.getElementById('btn-next').textContent).toContain('بعدی');
   });
 });

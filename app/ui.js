@@ -161,7 +161,7 @@ function removeDnsServer(type, index) {
 // ============================================================
 async function addProxiesFromUrls() {
   const ta = document.getElementById('proxy-urls');
-  const lines = ta.value.split('\n').filter(l => l.trim());
+  const lines = ta.value.split('\n').flatMap(splitConcatenatedLinks).filter(l => l.trim());
   if (!lines.length) return;
   let added = 0, addedSubs = 0, failed = 0;
   for (const line of lines) {

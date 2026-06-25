@@ -20,7 +20,7 @@ const state = {
   importedRawConfig: null
 };
 
-const SUPPORTED_LANGS = ['ru', 'en'];
+const SUPPORTED_LANGS = ['ru', 'en', 'fa'];
 const I18N = {
   ru: {
     appTitle: 'Mihomo Configurator',
@@ -28,6 +28,7 @@ const I18N = {
     languageLabel: 'Язык',
     languageRu: 'Русский',
     languageEn: 'English',
+    languageFa: 'فارسی',
     steps: ['DNS', 'Серверы', 'Правила', 'Скачать'],
     dnsTitle: 'Настройка DNS',
     dnsDesc: 'Настройте DNS-серверы для резолвинга доменов',
@@ -45,7 +46,7 @@ const I18N = {
     serversDesc: 'Добавьте прокси-серверы из ссылок или файлов конфигурации',
     serversHint: 'Все данные обрабатываются локально в вашем браузере и никуда не передаются.',
     linksTitle: 'Из ссылок',
-    linksHint: 'Вставьте ссылки по одной на строку: vless://, vmess://, ss://, trojan://, hysteria2://, hy2://, tuic://, vpn:// (из Amnezia: AmneziaWG/WireGuard/VLESS) или URL подписки https://...',
+    linksHint: 'Вставьте ссылки по одной на строку: vless://, vmess://, ss://, ssr://, trojan://, hysteria2://, hy2://, hysteria://, tuic://, wg://, wireguard://, snell://, ssh://, socks://, anytls://, vpn:// (из Amnezia: AmneziaWG/WireGuard/VLESS) или URL подписки https://...',
     linksAdd: 'Добавить из ссылок',
     fileTitle: 'Из файла (WireGuard / AmneziaWG)',
     fileHint: 'Загрузите .conf файл. AmneziaWG определяется автоматически.',
@@ -106,6 +107,11 @@ const I18N = {
     presetDirectRu: 'RU трафик напрямую',
     presetRuBlocked: 'Заблокированные сайты',
     presetAllCdn: 'Все CDN',
+    presetIranDirect: 'Иранский трафик напрямую',
+    presetIranAds: 'Иранская реклама',
+    presetTrackers: 'Трекеры',
+    presetMalware: 'Вредоносные сайты',
+    presetCensored: 'Цензурируемые сайты',
     devicePcLabel: 'PC / Android / iOS',
     devicePcHintHtml: 'Клиент: <a href="https://github.com/pluralplay/FlClashX/releases" target="_blank" style="color:#267cff">FlClashX</a> (Windows / macOS / Linux / Android) · iOS: <a href="https://apps.apple.com/us/app/clash-mi/id6744321968" target="_blank" style="color:#267cff">Clash Mi</a>',
     deviceRouterLabel: 'Роутер (OpenWRT)',
@@ -121,6 +127,7 @@ const I18N = {
     languageLabel: 'Language',
     languageRu: 'Russian',
     languageEn: 'English',
+    languageFa: 'فارسی',
     steps: ['DNS', 'Servers', 'Rules', 'Download'],
     dnsTitle: 'DNS Setup',
     dnsDesc: 'Configure DNS servers for domain resolution',
@@ -138,7 +145,7 @@ const I18N = {
     serversDesc: 'Add proxy servers from links or configuration files',
     serversHint: 'All data is processed locally in your browser and is not sent anywhere.',
     linksTitle: 'From Links',
-    linksHint: 'Paste one link per line: vless://, vmess://, ss://, trojan://, hysteria2://, hy2://, tuic://, vpn:// (from Amnezia: AmneziaWG/WireGuard/VLESS), or subscription URL https://...',
+    linksHint: 'Paste one link per line: vless://, vmess://, ss://, ssr://, trojan://, hysteria2://, hy2://, hysteria://, tuic://, wg://, wireguard://, snell://, ssh://, socks://, anytls://, vpn:// (from Amnezia: AmneziaWG/WireGuard/VLESS), or subscription URL https://...',
     linksAdd: 'Add from links',
     fileTitle: 'From File (WireGuard / AmneziaWG)',
     fileHint: 'Upload a .conf file. AmneziaWG is detected automatically.',
@@ -199,6 +206,11 @@ const I18N = {
     presetDirectRu: 'RU traffic direct',
     presetRuBlocked: 'Blocked sites',
     presetAllCdn: 'All CDNs',
+    presetIranDirect: 'Iran traffic direct',
+    presetIranAds: 'Iranian ads',
+    presetTrackers: 'Trackers',
+    presetMalware: 'Malicious sites',
+    presetCensored: 'Censored sites',
     devicePcLabel: 'PC / Android / iOS',
     devicePcHintHtml: 'Client: <a href="https://github.com/pluralplay/FlClashX/releases" target="_blank" style="color:#267cff">FlClashX</a> (Windows / macOS / Linux / Android) · iOS: <a href="https://apps.apple.com/us/app/clash-mi/id6744321968" target="_blank" style="color:#267cff">Clash Mi</a>',
     deviceRouterLabel: 'Router (OpenWRT)',
@@ -207,6 +219,105 @@ const I18N = {
     importSuccess: 'Config imported',
     importFail: 'Failed to import config',
     importResetBtn: 'Reset import'
+  },
+  fa: {
+    appTitle: 'Mihomo Configurator',
+    appSubtitleHtml: 'سازنده پیکربندی برای <a href="https://github.com/MetaCubeX/mihomo" target="_blank" style="color:#267cff">mihomo</a>',
+    languageLabel: 'زبان',
+    languageRu: 'Русский',
+    languageEn: 'English',
+    languageFa: 'فارسی',
+    steps: ['DNS', 'سرورها', 'قوانین', 'دانلود'],
+    dnsTitle: 'تنظیم DNS',
+    dnsDesc: 'سرورهای DNS را برای resolve کردن دامنه‌ها پیکربندی کنید',
+    dnsMainHint: 'اگر نمی‌دانید چه کاری انجام می‌دهید، تغییر تنظیمات این صفحه توصیه نمی‌شود.',
+    ipv6Label: 'IPv6',
+    ipv6Disabled: 'غیرفعال',
+    ipv6Enabled: 'فعال',
+    dnsDefaultTitle: 'Default Nameservers',
+    dnsDefaultHint: 'سرورهای DNS (IP) که برای resolve کردن آدرس nameserverهای اصلی استفاده می‌شوند',
+    dnsDefaultAdd: 'افزودن',
+    dnsNsTitle: 'Nameservers',
+    dnsNsHint: 'سرورهای DNS اصلی (DoH / DoT) برای resolve کردن دامنه‌ها',
+    dnsNsAdd: 'افزودن',
+    serversTitle: 'افزودن سرورها',
+    serversDesc: 'سرورهای پروکسی را از لینک‌ها یا فایل‌های پیکربندی اضافه کنید',
+    serversHint: 'همه داده‌ها به‌صورت محلی در مرورگر شما پردازش می‌شوند و به جایی ارسال نمی‌شوند.',
+    linksTitle: 'از لینک‌ها',
+    linksHint: 'در هر خط یک لینک وارد کنید: vless://، vmess://، ss://، ssr://، trojan://، hysteria2://، hy2://، hysteria://، tuic://، wg://، wireguard://، snell://، ssh://، socks://، anytls://، vpn:// (از Amnezia: AmneziaWG/WireGuard/VLESS) یا URL اشتراک https://...',
+    linksAdd: 'افزودن از لینک‌ها',
+    fileTitle: 'از فایل (WireGuard / AmneziaWG)',
+    fileHint: 'یک فایل .conf بارگذاری کنید. AmneziaWG به‌صورت خودکار تشخیص داده می‌شود.',
+    proxyListTitle: 'سرورها و اشتراک‌های افزوده‌شده ({count})',
+    proxyClear: 'پاک کردن همه',
+    proxyThName: 'نام',
+    proxyThType: 'نوع',
+    proxyThServer: 'سرور',
+    proxyThPort: 'پورت',
+    rulesTitle: 'قوانین مسیریابی',
+    rulesDesc: 'مشخص کنید کدام ترافیک از پروکسی عبور کند و کدام مستقیم ارسال شود',
+    rulesServicesTitle: 'سرویس‌های محبوب',
+    rulesCdnTitle: 'CDN',
+    rulesCdnHint: 'محدوده‌های IP ارائه‌دهندگان CDN برای مسیریابی از پروکسی',
+    rulesOtherTitle: 'سایر',
+    ruleManualTitle: 'افزودن دستی قانون',
+    ruleAddBtn: 'افزودن',
+    rulesCurrentTitle: 'قوانین فعلی',
+    matchLabel: 'ترافیک باقی‌مانده (MATCH) ←',
+    downloadTitle: 'دانلود پیکربندی',
+    downloadDesc: 'دستگاه را انتخاب کنید و فایل پیکربندی را دانلود کنید',
+    deviceTitle: 'دستگاه',
+    previewTitle: 'پیش‌نمایش',
+    copyBtn: 'کپی',
+    downloadBtn: 'دانلود config.yaml',
+    prevBtn: 'قبلی',
+    nextBtn: 'بعدی',
+    subModalTitle: 'تنظیمات اشتراک',
+    subEditLabel: 'اشتراک:',
+    subFilterLabel: 'سرورهایی را اضافه کن که نامشان شامل این کلمات است:',
+    subExcludeLabel: 'سرورهایی را حذف کن که نامشان شامل این کلمات است:',
+    cancelBtn: 'لغو',
+    saveBtn: 'ذخیره',
+    errAddDnsBoth: 'برای ادامه، سرورهای DNS را اضافه کنید.',
+    errAddDefaultNs: 'برای ادامه، Default Nameservers را اضافه کنید.',
+    errAddNs: 'برای ادامه، Nameservers (DoH/DoT) را اضافه کنید.',
+    errAddProxyOrSub: 'برای ادامه، یک سرور پروکسی یا اشتراک اضافه کنید.',
+    emptyServers: 'سروری وجود ندارد',
+    emptyRules: 'قانونی وجود ندارد. preset اضافه کنید یا یک قانون دستی بسازید.',
+    removeTitle: 'حذف',
+    editTitle: 'ویرایش',
+    moveUpTitle: 'بالا',
+    moveDownTitle: 'پایین',
+    directOption: 'مستقیم',
+    rejectOption: 'مسدود کردن',
+    ruleValueRequired: 'مقدار قانون را وارد کنید',
+    addedServersToast: 'سرورهای افزوده‌شده: {count}',
+    addedSubsToast: 'اشتراک‌های افزوده‌شده: {count}',
+    failedParseToast: 'قابل شناسایی نبود: {count}',
+    proxyAddFailed: 'افزودن سرور ناموفق بود',
+    proxyAddedToast: 'سرور {type} اضافه شد: {name}',
+    proxyFileParseFailed: 'فایل پیکربندی قابل شناسایی نبود',
+    subUpdatedToast: 'پارامترهای اشتراک به‌روزرسانی شد: {name}',
+    copySuccess: 'در کلیپ‌بورد کپی شد',
+    copyFail: 'کپی ناموفق بود',
+    downloadSuccess: 'فایل config.yaml دانلود شد',
+    subscriptionType: 'اشتراک',
+    presetDirectRu: 'ترافیک RU مستقیم',
+    presetRuBlocked: 'سایت‌های مسدودشده',
+    presetAllCdn: 'همه CDNها',
+    presetIranDirect: 'ترافیک ایران مستقیم',
+    presetIranAds: 'تبلیغات ایرانی',
+    presetTrackers: 'ردیاب‌ها',
+    presetMalware: 'سایت‌های مخرب',
+    presetCensored: 'سایت‌های سانسورشده',
+    devicePcLabel: 'PC / Android / iOS',
+    devicePcHintHtml: 'کلاینت: <a href="https://github.com/pluralplay/FlClashX/releases" target="_blank" style="color:#267cff">FlClashX</a> (Windows / macOS / Linux / Android) · iOS: <a href="https://apps.apple.com/us/app/clash-mi/id6744321968" target="_blank" style="color:#267cff">Clash Mi</a>',
+    deviceRouterLabel: 'روتر (OpenWRT)',
+    deviceRouterHintHtml: 'کلاینت: <a href="https://ssclash.notion.site/SSClash-OpenWrt-15989188f6b4804b8e4bcc15ef00b890" target="_blank" style="color:#267cff">SSClash</a>',
+    importBtn: 'وارد کردن پیکربندی',
+    importSuccess: 'پیکربندی وارد شد',
+    importFail: 'وارد کردن پیکربندی ناموفق بود',
+    importResetBtn: 'بازنشانی واردات'
   }
 };
 
@@ -216,7 +327,9 @@ function browserLanguage() {
     if (SUPPORTED_LANGS.includes(saved)) return saved;
   } catch {}
   const lang = (navigator.language || '').toLowerCase();
-  return lang.startsWith('ru') ? 'ru' : 'en';
+  if (lang.startsWith('ru')) return 'ru';
+  if (lang.startsWith('fa') || lang.startsWith('prs')) return 'fa';
+  return 'en';
 }
 
 function formatText(template, vars = {}) {
@@ -251,12 +364,14 @@ function getSteps() {
 
 function localizeStaticUI() {
   document.documentElement.lang = state.lang;
+  document.documentElement.dir = state.lang === 'fa' ? 'rtl' : 'ltr';
   document.title = t('appTitle');
   setText('app-title', 'appTitle');
   setHtml('app-subtitle', 'appSubtitleHtml');
   setText('lang-switch-label', 'languageLabel');
   setText('lang-option-ru', 'languageRu');
   setText('lang-option-en', 'languageEn');
+  setText('lang-option-fa', 'languageFa');
   setText('dns-title', 'dnsTitle');
   setText('dns-desc', 'dnsDesc');
   setText('dns-main-hint', 'dnsMainHint');
@@ -341,13 +456,18 @@ function setLanguage(lang, persist = true) {
 const DNS_DEFAULT_PRESETS = {
   quad9:      { label: 'Quad9',      servers: ['9.9.9.9', '149.112.112.112'] },
   cloudflare: { label: 'Cloudflare', servers: ['1.1.1.1', '1.0.0.1'] },
-  google:     { label: 'Google',     servers: ['8.8.8.8', '8.8.4.4'] }
+  google:     { label: 'Google',     servers: ['8.8.8.8', '8.8.4.4'] },
+  adguard:   { label: 'AdGuard',   servers: ['94.140.14.15', '94.140.15.15'] },
+  alidns:    { label: 'AliDNS',    servers: ['223.5.5.5'] },
+  yandex:    { label: 'Yandex',    servers: ['77.88.8.8'] },
+  configMix: { label: 'Google + Cloudflare + Quad9', servers: ['8.8.8.8', '8.8.4.4', '1.0.0.1', '1.1.1.1', '9.9.9.9', '9.9.9.11', '9.9.9.10'] }
 };
 
 const DNS_NS_PRESETS = {
   quad9:      { label: 'Quad9 DoH/DoT',      servers: ['https://dns.quad9.net/dns-query', 'tls://dns.quad9.net'] },
   cloudflare: { label: 'Cloudflare DoH/DoT', servers: ['https://cloudflare-dns.com/dns-query', 'tls://1dot1dot1dot1.cloudflare-dns.com'] },
-  google:     { label: 'Google DoH/DoT',     servers: ['https://8.8.8.8/dns-query', 'tls://8.8.8.8'] }
+  google:     { label: 'Google DoH/DoT',     servers: ['https://8.8.8.8/dns-query', 'tls://8.8.8.8'] },
+  rethink:   { label: 'RethinkDNS',          servers: ['https://sky.rethinkdns.com/1:-J8AGH8C7_2-___f3_vZ3f_z-f9KagBI', 'tls://1-7cpqagd7alx73px777p5766z3x77h6p7jjvaasa.max.rethinkdns.com'] }
 };
 
 // ============================================================
@@ -364,12 +484,82 @@ const SERVICE_PRESETS = {
   chatgpt:   { label: 'ChatGPT',   rules: [{type:'RULE-SET',payload:'geosite-openai',target:'Proxy'}] },
   gemini:    { label: 'Gemini',    rules: [{type:'RULE-SET',payload:'geosite-google-gemini',target:'Proxy'}] },
   claude:    { label: 'Claude',    rules: [{type:'RULE-SET',payload:'geosite-anthropic',target:'Proxy'}] },
-  roblox:    { label: 'Roblox',    rules: [{type:'RULE-SET',payload:'geosite-roblox',target:'Proxy'}] }
+  roblox:    { label: 'Roblox',    rules: [{type:'RULE-SET',payload:'geosite-roblox',target:'Proxy'}] },
+  twitch:    { label: 'Twitch',    rules: [{type:'RULE-SET',payload:'twitch',target:'Proxy'}] },
+  steam:     { label: 'Steam',     rules: [{type:'RULE-SET',payload:'steam',target:'Proxy'}, {type:'RULE-SET',payload:'SteamRegionCheck',target:'Proxy'}] },
+  games:     { label: 'Games',     rules: [{type:'RULE-SET',payload:'game',target:'Proxy'}, {type:'RULE-SET',payload:'GameDownload',target:'Proxy'}, {type:'RULE-SET',payload:'category-games',target:'Proxy'}, {type:'RULE-SET',payload:'Xbox',target:'Proxy'}] },
+  github:    { label: 'GitHub',    rules: [{type:'RULE-SET',payload:'github',target:'Proxy'}] },
+  google:    { label: 'Google',    rules: [{type:'RULE-SET',payload:'google',target:'Proxy'}, {type:'RULE-SET',payload:'google-play',target:'Proxy'}] },
+  spotify:   { label: 'Spotify',   rules: [{type:'RULE-SET',payload:'DomainSpotify',target:'Proxy'}, {type:'RULE-SET',payload:'mihspotify',target:'Proxy'}] },
+  windows:   { label: 'Windows',   rules: [{type:'RULE-SET',payload:'windows',target:'Proxy'}] },
+  stremio:   { label: 'Stremio',   rules: [{type:'RULE-SET',payload:'stremio',target:'Proxy'}] },
+  anydesk:   { label: 'AnyDesk',   rules: [{type:'DOMAIN-SUFFIX',payload:'anydesk.com',target:'Proxy'}, {type:'PROCESS-NAME',payload:'AnyDesk.exe',target:'Proxy'}, {type:'PROCESS-NAME',payload:'com.anydesk.anydeskandroid',target:'Proxy'}] }
 };
 
 const OTHER_PRESETS = {
   directRU:  { labelKey: 'presetDirectRu', rules: [{type:'GEOIP',payload:'RU',target:'DIRECT'}] },
-  ruBlocked: { labelKey: 'presetRuBlocked', rules: [{type:'RULE-SET',payload:'ru-blocked',target:'Proxy'}] }
+  ruBlocked: { labelKey: 'presetRuBlocked', rules: [{type:'RULE-SET',payload:'ru-blocked',target:'Proxy'}] },
+  iranDirect: { labelKey: 'presetIranDirect', rules: [
+    {type:'RULE-SET',payload:'apps',target:'DIRECT'},
+    {type:'RULE-SET',payload:'iran',target:'DIRECT'},
+    {type:'RULE-SET',payload:'irasn',target:'DIRECT'},
+    {type:'RULE-SET',payload:'ircidr',target:'DIRECT'},
+    {type:'RULE-SET',payload:'ir',target:'DIRECT'},
+    {type:'RULE-SET',payload:'category_ir',target:'DIRECT'}
+  ] },
+  iranAds: { labelKey: 'presetIranAds', rules: [
+    {type:'RULE-SET',payload:'iran_ads',target:'REJECT'},
+    {type:'RULE-SET',payload:'PersianBlocker',target:'REJECT'},
+    {type:'RULE-SET',payload:'ads',target:'REJECT'}
+  ] },
+  trackers: { labelKey: 'presetTrackers', rules: [
+    {type:'RULE-SET',payload:'category_public_tracker',target:'REJECT'},
+    {type:'RULE-SET',payload:'PrivateTracker',target:'REJECT'}
+  ] },
+  malware: { labelKey: 'presetMalware', rules: [
+    {type:'RULE-SET',payload:'malware',target:'REJECT'},
+    {type:'RULE-SET',payload:'phishing',target:'REJECT'},
+    {type:'RULE-SET',payload:'cryptominers',target:'REJECT'},
+    {type:'RULE-SET',payload:'warninglist',target:'REJECT'},
+    {type:'RULE-SET',payload:'Ponzi',target:'REJECT'}
+  ] },
+  censored: { labelKey: 'presetCensored', rules: [{type:'RULE-SET',payload:'censor',target:'Proxy'}] }
+};
+
+const CUSTOM_RULE_PROVIDERS = {
+  category_public_tracker: { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/V2rayDomains2Clash/generated/category-public-tracker.yaml', path: './ruleset/category_public_tracker.yaml' },
+  iran_ads: { behavior: 'domain', url: 'https://github.com/bootmortis/iran-hosted-domains/releases/latest/download/clash_rules_ads.yaml', path: './ruleset/iran_ads.yaml' },
+  PersianBlocker: { behavior: 'domain', url: 'https://github.com/MasterKia/iran-hosted-domains/releases/latest/download/clash_rules_ads.yaml', path: './ruleset/PersianBlocker.yaml' },
+  youtube: { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/V2rayDomains2Clash/generated/youtube.yaml', path: './ruleset/youtube.yaml' },
+  telegram: { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/V2rayDomains2Clash/generated/telegram.yaml', path: './ruleset/telegram.yaml' },
+  twitch: { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/V2rayDomains2Clash/generated/twitch.yaml', path: './ruleset/twitch.yaml' },
+  censor: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/clash_rules/main/censor.yaml', path: './ruleset/censor.yaml' },
+  apps: { behavior: 'classical', format: 'yaml', url: 'https://github.com/chocolate4u/Iran-clash-rules/releases/latest/download/apps.yaml', path: './ruleset/apps.yaml' },
+  iran: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/clash_rules/main/iran.yaml', path: './ruleset/iran.yaml' },
+  irasn: { behavior: 'classical', format: 'yaml', url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-clash-rules/release/irasn.yaml', path: './ruleset/irasn.yaml' },
+  ircidr: { behavior: 'ipcidr', format: 'yaml', url: 'https://github.com/chocolate4u/Iran-clash-rules/releases/latest/download/ircidr.yaml', path: './ruleset/ircidr.yaml' },
+  ir: { behavior: 'domain', format: 'yaml', url: 'https://github.com/chocolate4u/Iran-clash-rules/releases/latest/download/ir.yaml', path: './ruleset/ir.yaml' },
+  category_ir: { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/V2rayDomains2Clash/generated/category-ir.yaml', path: './ruleset/category_ir.yaml' },
+  steam: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/clash_rules/main/steam.yaml', path: './ruleset/steam.yaml' },
+  game: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/clash_rules/refs/heads/main/game.yaml', path: './ruleset/game.yaml' },
+  'category-games': { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/V2rayDomains2Clash/refs/heads/generated/category-games.yaml', path: './ruleset/category-games.yaml' },
+  malware: { behavior: 'domain', format: 'yaml', url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-clash-rules/release/malware.yaml', path: './ruleset/malware.yaml' },
+  phishing: { behavior: 'domain', format: 'yaml', url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-clash-rules/release/phishing.yaml', path: './ruleset/phishing.yaml' },
+  cryptominers: { behavior: 'domain', format: 'yaml', url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-clash-rules/release/cryptominers.yaml', path: './ruleset/cryptominers.yaml' },
+  ads: { behavior: 'domain', format: 'yaml', url: 'https://raw.githubusercontent.com/Chocolate4U/Iran-clash-rules/releases/latest/download/category-ads-all.yaml', path: './ruleset/ads.yaml' },
+  PrivateTracker: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/mihomo_rule/refs/heads/main/list/PrivateTracker.yaml', path: './ruleset/PrivateTracker.yaml' },
+  GameDownload: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/mihomo_rule/refs/heads/main/list/GameDownload.yaml', path: './ruleset/GameDownload.yaml' },
+  SteamRegionCheck: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/mihomo_rule/refs/heads/main/list/SteamRegionCheck.yaml', path: './ruleset/SteamRegionCheck.yaml' },
+  Xbox: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/mihomo_rule/refs/heads/main/list/Xbox.yaml', path: './ruleset/Xbox.yaml' },
+  Ponzi: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/mihomo_rule/refs/heads/main/Ponzi.yaml', path: './ruleset/Ponzi.yaml' },
+  warninglist: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/mihomo_rule/refs/heads/main/warning-list.yaml', path: './ruleset/warninglist.yaml' },
+  google: { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/V2rayDomains2Clash/refs/heads/generated/google.yaml', path: './ruleset/google.yaml' },
+  'google-play': { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/V2rayDomains2Clash/refs/heads/generated/google-play.yaml', path: './ruleset/google-play.yaml' },
+  github: { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/V2rayDomains2Clash/refs/heads/generated/github.yaml', path: './ruleset/github.yaml' },
+  stremio: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/clash_rules/refs/heads/main/stremio.yaml', path: './ruleset/stremio.yaml' },
+  windows: { behavior: 'classical', url: 'https://raw.githubusercontent.com/10ium/clash_rules/refs/heads/main/windows.yaml', path: './ruleset/windows.yaml' },
+  DomainSpotify: { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/V2rayDomains2Clash/refs/heads/generated/spotify.yaml', path: './ruleset/DomainSpotify.yaml' },
+  mihspotify: { behavior: 'domain', url: 'https://raw.githubusercontent.com/10ium/mihomo_rule/refs/heads/main/list/Spotify.yaml', path: './ruleset/mihSpotify.yaml' }
 };
 
 const CDN_PROVIDERS = [

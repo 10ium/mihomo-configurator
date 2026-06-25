@@ -104,11 +104,62 @@ describe('mihomo YAML generation', () => {
     });
   });
 
+
+
+  it('generates rule providers for Iran-focused preset options from the provided config', () => {
+    app.togglePreset('other', 'iranDirect');
+    app.togglePreset('other', 'iranAds');
+    app.togglePreset('services', 'steam');
+    app.state.matchTarget = 'DIRECT';
+
+    const doc = yaml.load(app.generateConfig());
+
+    expect(doc['rule-providers'].apps).toMatchObject({
+      behavior: 'classical',
+      type: 'http',
+      format: 'yaml',
+      url: 'https://github.com/chocolate4u/Iran-clash-rules/releases/latest/download/apps.yaml',
+      path: './ruleset/apps.yaml'
+    });
+    expect(doc['rule-providers'].iran_ads).toMatchObject({
+      behavior: 'domain',
+      type: 'http',
+      url: 'https://github.com/bootmortis/iran-hosted-domains/releases/latest/download/clash_rules_ads.yaml',
+      path: './ruleset/iran_ads.yaml'
+    });
+    expect(doc['rule-providers'].steam).toMatchObject({
+      behavior: 'classical',
+      type: 'http',
+      url: 'https://raw.githubusercontent.com/10ium/clash_rules/main/steam.yaml'
+    });
+    expect(doc.rules).toContain('RULE-SET,apps,DIRECT');
+    expect(doc.rules).toContain('RULE-SET,iran_ads,REJECT');
+    expect(doc.rules).toContain('RULE-SET,steam,Proxy');
+  });
+
   it('quotes YAML scalars that could otherwise be parsed as booleans, numbers, or syntax', () => {
     expect(app.q('true')).toBe('"true"');
     expect(app.q('1')).toBe('"1"');
     expect(app.q('value:with:colon')).toBe('"value:with:colon"');
     expect(app.q('plain-value')).toBe('plain-value');
+  });
+
+
+
+  it('emits YAML for newly supported proxy link types', async () => {
+    app.state.proxies = [
+      await app.parseProxyUrl('snell://psk@snell.example.com:443?version=3&obfs=tls&obfs-host=front.example.com#Snell'),
+      await app.parseProxyUrl('ssh://user:pass@ssh.example.com:22#SSH'),
+      await app.parseProxyUrl(`wg://${encodeURIComponent('private/key=')}@wg.example.com:51820?public-key=${encodeURIComponent('public/key=')}&address=10.8.0.2%2F32&reserved=1,2,3#WG`)
+    ];
+
+    const doc = yaml.load(app.generateConfig());
+
+    expect(doc.proxies).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'Snell', type: 'snell', psk: 'psk', version: 3 }),
+      expect.objectContaining({ name: 'SSH', type: 'ssh', user: 'user', password: 'pass' }),
+      expect.objectContaining({ name: 'WG', type: 'wireguard', reserved: [1, 2, 3] })
+    ]));
   });
 
   it('imports existing YAML, preserves non-generated providers, and regenerates editable sections', async () => {
