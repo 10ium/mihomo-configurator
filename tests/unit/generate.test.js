@@ -144,6 +144,24 @@ describe('mihomo YAML generation', () => {
     expect(app.q('plain-value')).toBe('plain-value');
   });
 
+
+
+  it('emits YAML for newly supported proxy link types', async () => {
+    app.state.proxies = [
+      await app.parseProxyUrl('snell://psk@snell.example.com:443?version=3&obfs=tls&obfs-host=front.example.com#Snell'),
+      await app.parseProxyUrl('ssh://user:pass@ssh.example.com:22#SSH'),
+      await app.parseProxyUrl(`wg://${encodeURIComponent('private/key=')}@wg.example.com:51820?public-key=${encodeURIComponent('public/key=')}&address=10.8.0.2%2F32&reserved=1,2,3#WG`)
+    ];
+
+    const doc = yaml.load(app.generateConfig());
+
+    expect(doc.proxies).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: 'Snell', type: 'snell', psk: 'psk', version: 3 }),
+      expect.objectContaining({ name: 'SSH', type: 'ssh', user: 'user', password: 'pass' }),
+      expect.objectContaining({ name: 'WG', type: 'wireguard', reserved: [1, 2, 3] })
+    ]));
+  });
+
   it('imports existing YAML, preserves non-generated providers, and regenerates editable sections', async () => {
     app.importConfig(`
 mode: rule

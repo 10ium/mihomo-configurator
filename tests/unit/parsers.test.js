@@ -244,6 +244,62 @@ AllowedIPs = 0.0.0.0/0
     });
   });
 
+
+
+  it('sanitizes and splits concatenated proxy links before parsing', async () => {
+    const combined = 'vless://11111111-1111-4111-8111-111111111111@one.example.com:443?security=tls#One\u200Btrojan://pass@two.example.com:443#Two';
+
+    expect(app.splitConcatenatedLinks(combined)).toHaveLength(2);
+    const first = await app.parseProxyUrl(app.splitConcatenatedLinks(combined)[0]);
+    const second = await app.parseProxyUrl(app.splitConcatenatedLinks(combined)[1]);
+
+    expect(first).toMatchObject({ name: 'One', type: 'vless', server: 'one.example.com' });
+    expect(second).toMatchObject({ name: 'Two', type: 'trojan', server: 'two.example.com' });
+  });
+
+  it('parses WireGuard, Snell, SSH, and authenticated HTTP proxy links', async () => {
+    const privateKey = encodeURIComponent('private/key=');
+    const publicKey = encodeURIComponent('public/key=');
+
+    await expect(app.parseProxyUrl(`wg://${privateKey}@wg.example.com:51820?public-key=${publicKey}&address=10.8.0.2%2F32&reserved=1,2,3&mtu=1280#WG`)).resolves.toMatchObject({
+      name: 'WG',
+      type: 'wireguard',
+      server: 'wg.example.com',
+      port: 51820,
+      ip: '10.8.0.2',
+      'private-key': 'private/key=',
+      'public-key': 'public/key=',
+      reserved: [1, 2, 3],
+      mtu: 1280
+    });
+
+    await expect(app.parseProxyUrl('snell://psk@snell.example.com:443?version=3&obfs=tls&obfs-host=front.example.com#Snell')).resolves.toMatchObject({
+      name: 'Snell',
+      type: 'snell',
+      psk: 'psk',
+      version: 3,
+      'obfs-opts': { mode: 'tls', host: 'front.example.com' }
+    });
+
+    await expect(app.parseProxyUrl('ssh://user:pass@ssh.example.com:22#SSH')).resolves.toMatchObject({
+      name: 'SSH',
+      type: 'ssh',
+      user: 'user',
+      password: 'pass'
+    });
+
+    await expect(app.parseProxyUrl('https://user:pass@http.example.com:8443?insecure=1#HTTPS')).resolves.toMatchObject({
+      name: 'HTTPS',
+      type: 'http',
+      server: 'http.example.com',
+      port: 8443,
+      tls: true,
+      username: 'user',
+      password: 'pass',
+      'skip-cert-verify': true
+    });
+  });
+
   it('recognizes subscription URLs, unique names, and unsupported input safely', async () => {
     app.state.proxies.push({ name: 'Node', type: 'ss', server: 'one.example.com', port: 443 });
     app.state.proxyProviders.push({ name: 'Node-2', type: 'http', url: 'https://sub.example.com' });

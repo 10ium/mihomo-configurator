@@ -281,6 +281,9 @@ function proxyToYaml(p) {
         y += `    dns:\n`;
         for (const d of p.dns) y += `      - ${d}\n`;
       }
+      if (Array.isArray(p.reserved) && p.reserved.length) {
+        y += `    reserved: [${p.reserved.map(v => Math.trunc(+v)).join(', ')}]\n`;
+      }
       if (p['amnezia-wg-option']) {
         y += `    amnezia-wg-option:\n`;
         for (const [k, v] of Object.entries(p['amnezia-wg-option'])) {
@@ -329,6 +332,21 @@ function proxyToYaml(p) {
       if (p.password) y += `    password: ${q(p.password)}\n`;
       if (p.tls) y += `    tls: true\n`;
       if (p['skip-cert-verify']) y += `    skip-cert-verify: true\n`;
+      break;
+
+    case 'snell':
+      y += `    psk: ${q(p.psk)}\n`;
+      y += `    version: ${p.version || 2}\n`;
+      if (p['obfs-opts']) {
+        y += `    obfs-opts:\n`;
+        for (const [k, v] of Object.entries(p['obfs-opts'])) y += `      ${k}: ${q(v)}\n`;
+      }
+      break;
+
+    case 'ssh':
+      y += `    user: ${q(p.user)}\n`;
+      if (p.password) y += `    password: ${q(p.password)}\n`;
+      if (p['private-key']) y += `    private-key: ${q(p['private-key'])}\n`;
       break;
 
     case 'anytls':

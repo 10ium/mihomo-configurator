@@ -1,6 +1,29 @@
 // ============================================================
 // Proxy Parsers (Step 2)
 // ============================================================
+
+const CONTROL_CHARS_RE = /[\x00-\x1F\x7F-\x9F\u200B-\u200D\uFEFF\uFFFD]/g;
+const PROTOCOL_PATTERN = /(vless:\/\/|vmess:\/\/|trojan:\/\/|ss:\/\/|ssr:\/\/|hy2:\/\/|hysteria2:\/\/|hysteria:\/\/|wg:\/\/|wireguard:\/\/|tuic:\/\/|snell:\/\/|socks5h?:\/\/|socks:\/\/|anytls:\/\/|mierus:\/\/|ssh:\/\/)/ig;
+
+function removeControlChars(value) {
+  return typeof value === 'string' ? value.replace(CONTROL_CHARS_RE, '') : value;
+}
+
+function splitConcatenatedLinks(line) {
+  const cleaned = removeControlChars(String(line ?? '')).trim();
+  if (!cleaned) return [];
+  const matches = [...cleaned.matchAll(PROTOCOL_PATTERN)];
+  if (matches.length <= 1) return [cleaned];
+  const links = [];
+  for (let i = 0; i < matches.length; i++) {
+    const start = matches[i].index;
+    const end = i + 1 < matches.length ? matches[i + 1].index : cleaned.length;
+    const link = cleaned.slice(start, end).trim();
+    if (link) links.push(link);
+  }
+  return links;
+}
+
 function parseXHTTPExtra(extra, opts) {
   const xmuxToReuse = (xmux) => {
     if (!xmux || typeof xmux !== 'object' || Array.isArray(xmux)) return null;
@@ -1250,8 +1273,119 @@ function parseMieru(rawUrl) {
   return proxy;
 }
 
+
+function parseWireGuardUrl(rawUrl) {
+  const u = parseUrlOrNull(rawUrl);
+  if (!u || !['wg:', 'wireguard:'].includes(u.protocol)) return null;
+  const server = u.hostname;
+  const port = Number(u.port || 51820);
+  if (!server || !Number.isFinite(port)) return null;
+
+  const p = u.searchParams;
+  const privateKey = decodeURIComponentSafe(u.username) || p.get('private-key') || p.get('privateKey') || p.get('privatekey') || '';
+  const publicKey = p.get('public-key') || p.get('peer_publickey') || p.get('publicKey') || p.get('publickey') || '';
+  if (!privateKey || !publicKey) return null;
+
+  const address = decodeURIComponentSafe(p.get('ip') || p.get('address') || '10.0.0.2').split(',')[0].trim();
+  const proxy = {
+    name: u.hash ? decodeURIComponentSafe(u.hash.slice(1)) : `wg-${server}`,
+    type: 'wireguard',
+    server,
+    port,
+    ip: address.split('/')[0].trim() || '10.0.0.2',
+    'private-key': privateKey,
+    'public-key': decodeURIComponentSafe(publicKey),
+    udp: true
+  };
+  const ipv6 = address.includes(':') ? address.split('/')[0].trim() : '';
+  if (ipv6) proxy.ipv6 = ipv6;
+  const mtu = Number(p.get('mtu'));
+  if (Number.isFinite(mtu)) proxy.mtu = mtu;
+  const psk = p.get('pre-shared-key') || p.get('preshared-key') || p.get('psk');
+  if (psk) proxy['pre-shared-key'] = decodeURIComponentSafe(psk);
+  const reserved = p.get('reserved');
+  if (reserved) {
+    const decoded = decodeURIComponentSafe(reserved);
+    if (decoded.includes(',')) {
+      const values = decoded.split(',').map(v => Number(v.trim())).filter(Number.isFinite);
+      if (values.length) proxy.reserved = values;
+    } else {
+      const bytes = decodeBase64UrlToBytes(decoded);
+      if (bytes && bytes.length) proxy.reserved = [...bytes];
+    }
+  }
+  return proxy;
+}
+
+function parseSnell(rawUrl) {
+  const u = parseUrlOrNull(rawUrl);
+  if (!u || u.protocol !== 'snell:') return null;
+  const server = u.hostname;
+  const port = Number(u.port || 443);
+  const psk = decodeURIComponentSafe(u.username) || u.searchParams.get('psk') || '';
+  if (!server || !Number.isFinite(port) || !psk) return null;
+
+  const p = u.searchParams;
+  const proxy = {
+    name: u.hash ? decodeURIComponentSafe(u.hash.slice(1)) : `snell-${server}`,
+    type: 'snell',
+    server,
+    port,
+    psk,
+    version: Number(p.get('version') || 2)
+  };
+  const obfs = p.get('obfs');
+  if (obfs && obfs !== 'none') {
+    proxy['obfs-opts'] = { mode: obfs };
+    const host = p.get('obfs-host') || p.get('host');
+    if (host) proxy['obfs-opts'].host = host;
+  }
+  return proxy;
+}
+
+function parseSsh(rawUrl) {
+  const u = parseUrlOrNull(rawUrl);
+  if (!u || u.protocol !== 'ssh:') return null;
+  const server = u.hostname;
+  const port = Number(u.port || 22);
+  const user = decodeURIComponentSafe(u.username);
+  const password = decodeURIComponentSafe(u.password);
+  if (!server || !Number.isFinite(port) || !user) return null;
+  const proxy = {
+    name: u.hash ? decodeURIComponentSafe(u.hash.slice(1)) : `ssh-${server}`,
+    type: 'ssh',
+    server,
+    port,
+    user
+  };
+  if (password) proxy.password = password;
+  const privateKey = u.searchParams.get('private-key') || u.searchParams.get('privateKey');
+  if (privateKey) proxy['private-key'] = decodeURIComponentSafe(privateKey);
+  return proxy;
+}
+
+function parseHttpProxy(rawUrl) {
+  const u = parseUrlOrNull(rawUrl);
+  if (!u || !['http:', 'https:'].includes(u.protocol)) return null;
+  if (!u.username && !u.password) return null;
+  const server = u.hostname;
+  const port = Number(u.port || (u.protocol === 'https:' ? 443 : 80));
+  if (!server || !Number.isFinite(port)) return null;
+  const proxy = {
+    name: u.hash ? decodeURIComponentSafe(u.hash.slice(1)) : `${u.protocol.slice(0, -1)}-${server}`,
+    type: 'http',
+    server,
+    port,
+    username: decodeURIComponentSafe(u.username),
+    password: decodeURIComponentSafe(u.password)
+  };
+  if (u.protocol === 'https:') proxy.tls = true;
+  if (parseBoolish(u.searchParams.get('insecure')) || parseBoolish(u.searchParams.get('skip-cert-verify'))) proxy['skip-cert-verify'] = true;
+  return proxy;
+}
+
 async function parseProxyUrl(line) {
-  line = line.trim();
+  line = removeControlChars(String(line ?? '')).trim();
   if (!line) return null;
   const lower = line.toLowerCase();
   if (lower.startsWith('vpn://')) return await withTimeoutOrNull(parseAmneziaVpnLink(line), 10000);
@@ -1263,6 +1397,10 @@ async function parseProxyUrl(line) {
   if (lower.startsWith('hysteria2://') || lower.startsWith('hy2://')) return parseHysteria2(line);
   if (lower.startsWith('hysteria://')) return parseHysteria(line);
   if (lower.startsWith('tuic://')) return parseTuic(line);
+  if (lower.startsWith('wg://') || lower.startsWith('wireguard://')) return parseWireGuardUrl(line);
+  if (lower.startsWith('snell://')) return parseSnell(line);
+  if (lower.startsWith('ssh://')) return parseSsh(line);
+  if (/^https?:\/\//i.test(line)) return parseHttpProxy(line);
   if (lower.startsWith('anytls://')) return parseAnyTls(line);
   if (lower.startsWith('mierus://')) return parseMieru(line);
   if (/^socks5?h?:\/\//i.test(line)) return parseSocks(line);

@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
@@ -43,8 +43,11 @@ jobs:
       - name: Build GitHub Pages artifact
         run: npm run build
 
+      # Enable GitHub Pages in repository settings and set repository variable
+      # ENABLE_GITHUB_PAGES_DEPLOY=true before publishing. This keeps CI green
+      # for forks or repos where Pages is not enabled yet.
       - name: Upload static artifact
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.ENABLE_GITHUB_PAGES_DEPLOY == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -52,7 +55,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: test
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.ENABLE_GITHUB_PAGES_DEPLOY == 'true'
     runs-on: ubuntu-latest
     permissions:
       pages: write

@@ -30,6 +30,8 @@ const exportedNames = [
   'generateFromImported',
   'importConfig',
   'resetImport',
+  'splitConcatenatedLinks',
+  'removeControlChars',
   'parseProxyUrl',
   'parseVless',
   'parseVmess',
