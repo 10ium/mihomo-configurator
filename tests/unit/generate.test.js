@@ -104,6 +104,39 @@ describe('mihomo YAML generation', () => {
     });
   });
 
+
+
+  it('generates rule providers for Iran-focused preset options from the provided config', () => {
+    app.togglePreset('other', 'iranDirect');
+    app.togglePreset('other', 'iranAds');
+    app.togglePreset('services', 'steam');
+    app.state.matchTarget = 'DIRECT';
+
+    const doc = yaml.load(app.generateConfig());
+
+    expect(doc['rule-providers'].apps).toMatchObject({
+      behavior: 'classical',
+      type: 'http',
+      format: 'yaml',
+      url: 'https://github.com/chocolate4u/Iran-clash-rules/releases/latest/download/apps.yaml',
+      path: './ruleset/apps.yaml'
+    });
+    expect(doc['rule-providers'].iran_ads).toMatchObject({
+      behavior: 'domain',
+      type: 'http',
+      url: 'https://github.com/bootmortis/iran-hosted-domains/releases/latest/download/clash_rules_ads.yaml',
+      path: './ruleset/iran_ads.yaml'
+    });
+    expect(doc['rule-providers'].steam).toMatchObject({
+      behavior: 'classical',
+      type: 'http',
+      url: 'https://raw.githubusercontent.com/10ium/clash_rules/main/steam.yaml'
+    });
+    expect(doc.rules).toContain('RULE-SET,apps,DIRECT');
+    expect(doc.rules).toContain('RULE-SET,iran_ads,REJECT');
+    expect(doc.rules).toContain('RULE-SET,steam,Proxy');
+  });
+
   it('quotes YAML scalars that could otherwise be parsed as booleans, numbers, or syntax', () => {
     expect(app.q('true')).toBe('"true"');
     expect(app.q('1')).toBe('"1"');
